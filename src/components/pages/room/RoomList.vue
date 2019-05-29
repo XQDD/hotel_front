@@ -22,26 +22,26 @@
           @keyup.enter.native="queryPage"
           :data="autocompletes"/>
         <b-button @click="queryPage">搜索</b-button>
-        <span style="margin-left:  2rem;margin-right: 1rem">排序</span>
-        <b-form-select style="width: 10rem" v-model="sort" @change="changeSort">
+        <span style="margin-left:  1rem;margin-right: 1rem">未被预订日期过滤</span>
+        <b-form-input style="width: 12rem;margin-right: 0.3rem" type="date" @change="queryPage" v-model="startTime"/>
+        —
+        <b-form-input style="width: 12rem;margin-left: 0.3rem" type="date" @change="queryPage" v-model="endTime"/>
+        <span style="margin-left:  0.5rem;margin-right: 0.5rem">排序</span>
+        <b-form-select style="width: 7rem" v-model="sort" @change="changeSort">
           <option value="-1">无排序</option>
           <option value="0">价格升序</option>
           <option value="1">价格降序</option>
         </b-form-select>
-        <span style="margin-left:  2rem;margin-right: 1rem">状态</span>
-        <b-form-select style="width: 10rem" v-model="params.status" @change="queryPage">
+        <span style="margin-left:  0.5rem;margin-right: 0.5rem">开启</span>
+        <b-form-select style="width: 6rem" v-model="params.opened" @change="queryPage">
+          <option value="true">是</option>
+          <option value="false">否</option>
           <option :value="null">全部</option>
-          <option value="0">未入住</option>
-          <option value="1">已入住</option>
-          <option value="2">已退房（待打扫）</option>
-          <option value="3">打扫中</option>
-          <option value="4">未开放</option>
         </b-form-select>
       </div>
 
     </div>
     <b-table
-      id="my-table"
       striped hover bordered outlined
       :items="pageData.content"
       :fields="fields">
@@ -49,10 +49,7 @@
       <template slot="operation" slot-scope="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">详情</b-button>
         <b-button size="sm" @click="edit(row.item.id)" class="mr-2">编辑</b-button>
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">登记入住</b-button>
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">安排打扫</b-button>
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">关闭客房</b-button>
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">开启客房</b-button>
+        <b-button size="sm" @click="enter(row.item.roomNo)" class="mr-2">入住登记</b-button>
 
       </template>
 
@@ -81,7 +78,6 @@
     <b-pagination
       @change="fetchPage"
       :per-page="params.pageSize"
-      aria-controls="my-table"
       :total-rows="pageData.totalElements"
       v-model="pageData.currPage"/>
   </b-container>
@@ -89,6 +85,7 @@
 
 <script>
   import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
+  import {TimeUtils} from "../../../utils/utils";
 
   let fetchPage = (that) => that.axios
     .get("/room/getRoomList", {params: that.params})
@@ -96,20 +93,7 @@
       r.data.data.content.forEach(i => i._showDetails = true)
       that.pageData = r.data.data;
     })
-  let convertStatus = status => {
-    switch (status) {
-      case 0:
-        return "未入住";
-      case 1:
-        return "已入住";
-      case 2:
-        return "已退房（待打扫）";
-      case 3:
-        return "打扫中";
-      case 4:
-        return "未开放";
-    }
-  }
+
 
   export default {
     components: {
@@ -120,11 +104,11 @@
       //获取所有标签
       this.axios.get("/room/getRoomTags").then(r => {
         this.tags = r.data.data.map(t => t.name);
-        this.autocompletes.push(...this.tags);
+        this.autocompletes = [...new Set(this.autocompletes.concat(this.tags))];
       })
       //获取所有房号
       this.axios.get("/room/getRoomNos").then(r => {
-        this.autocompletes.push(...r.data.data);
+        this.autocompletes = [...new Set(this.autocompletes.concat(r.data.data))];
       })
     },
     data() {
@@ -137,12 +121,15 @@
           keyword: null,
           //排序方式,0房价
           order: null,
-          //状态
-          status: null,
           //查询标签
           tags: [],
           //排序顺序
           asc: null,
+          //时间筛选
+          startTime: null,
+          endTime: null,
+          //是否开启
+          opened: true,
         },
         //服务器返回数据
         pageData: {},
@@ -154,18 +141,17 @@
           roomNo: {
             label: "房号"
           },
-          deposit: {
-            label: "押金（元）"
-          },
           price: {
             label: "价格（元/天）"
           },
           description: {
             label: "说明"
           },
-          status: {
-            label: "状态",
-            formatter: convertStatus
+          opened: {
+            label: "是否开启",
+            formatter: (value) => {
+              return value ? "是" : "否";
+            }
           },
           operation: {
             label: "操作"
@@ -201,7 +187,7 @@
         }
         fetchPage(this)
       },
-      //改变顺序
+      //改变排序方式
       changeSort() {
         if (this.sort == -1) {
           this.params.asc = null;
@@ -214,6 +200,10 @@
           this.params.order = 0;
         }
         this.queryPage()
+      },
+      //登记入住
+      enter(roomNo) {
+        this.$router.push({path: "/addRoomRecord", query: {roomNo}})
       }
     },
     computed: {
@@ -224,7 +214,40 @@
             return {src: that.$store.getters.url.baseUploadURL + img}
           });
         }
+      },
+      startTime: {
+        get() {
+          if (this.params.startTime == null) {
+            return null;
+          } else {
+            return TimeUtils.formatDate(this.params.startTime);
+          }
+        },
+        set(val) {
+          if (val) {
+            this.params.startTime = new Date(val + " 0:0:0").getTime()
+          } else {
+            this.params.startTime = null
+          }
+        }
+      },
+      endTime: {
+        get() {
+          if (this.params.endTime == null) {
+            return null;
+          } else {
+            return TimeUtils.formatDate(this.params.endTime);
+          }
+        },
+        set(val) {
+          if (val) {
+            this.params.endTime = new Date(val + " 0:0:0").getTime()
+          } else {
+            this.params.endTime = null
+          }
+        }
       }
+
     }
   }
 </script>

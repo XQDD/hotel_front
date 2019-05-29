@@ -1,11 +1,11 @@
 export const urls = [
   {
-    name: "湛江分店",
-    baseURL: "https://tyzx.club/hotel",
-    baseUploadURL: "http://localhost/static/hotel/upload",
+    name: "远程",
+    baseURL: "http://192.168.43.43:81/hotel",
+    baseUploadURL: "http://192.168.43.43/static/hotel/upload",
   },
   {
-    name: "广州分店",
+    name: "本地",
     baseURL: "http://localhost:81/hotel",
     baseUploadURL: "http://localhost/static/hotel/upload",
   },

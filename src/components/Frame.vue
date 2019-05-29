@@ -4,9 +4,9 @@
     <b-row>
       <b-col cols="2" style="display: flex;flex-direction: column">
         <b-card header-bg-variant="transparent" class="text-center">
-          <b-img slot="header" height="80" style="width: 6rem" rounded="circle"
-                 src="../assets/images/login_hotel3.jpg" class="card-img-top"></b-img>
-          <b-dropdown size="sm" text="XQDD">
+          <b-img slot="header" height="80" style="width: 5rem" rounded="circle"
+                 :src="$store.getters.url.baseUploadURL+$store.state.user.icon" class="card-img-top"></b-img>
+          <b-dropdown size="sm" :text="$store.state.user.name">
             <b-dropdown-item-button @click="logout">
               <font-awesome-icon color="red" icon="sign-out-alt"/>
               退出登录
@@ -30,7 +30,6 @@
       <b-col>
         <div style="margin-top: 2rem">
           <router-view></router-view>
-
         </div>
       </b-col>
     </b-row>
@@ -40,27 +39,35 @@
 <script>
   import {library} from '@fortawesome/fontawesome-svg-core'
   import {
+    faBars,
     faBuilding,
     faChartLine,
     faCogs,
+    faFile,
     faHome,
     faIdCard,
     faList,
     faPeopleCarry,
     faPlusSquare,
+    faSignInAlt,
     faSignOutAlt,
     faUser,
     faUserCog,
     faUserFriends,
     faUserPlus,
     faUsers,
-    faUsersCog
+    faUsersCog,
+    faUserTag,
   } from '@fortawesome/free-solid-svg-icons'
 
-  library.add(faSignOutAlt, faBuilding, faHome, faList, faPlusSquare, faUser, faUserFriends, faPeopleCarry, faUsers, faUserPlus, faChartLine, faUserCog, faUsersCog, faCogs, faIdCard);
+  library.add(faBars,faUserTag, faFile, faSignInAlt, faSignOutAlt, faBuilding, faHome, faList, faPlusSquare, faUser, faUserFriends, faPeopleCarry, faUsers, faUserPlus, faChartLine, faUserCog, faUsersCog, faCogs, faIdCard);
 
 
   export default {
+    beforeRouteUpdate(to, from, next) {
+      this.activeKey = this.sideBarItems.findIndex(i => i.link === to.path)
+      next();
+    },
     data() {
       return {
         activeKey: 0,
@@ -88,6 +95,22 @@
             link: "/addRoom",
           },
           {
+            name: "入住记录",
+            icon: "file",
+            iconColor: "#4f90e2",
+            parent: true,
+          },
+          {
+            name: "入住列表",
+            icon: "bars",
+            link: "/roomRecords",
+          },
+          {
+            name: "入住登记",
+            icon: "sign-in-alt",
+            link: "/addRoomRecord",
+          },
+          {
             name: "客户",
             icon: "user",
             iconColor: "#d8ffe6",
@@ -96,28 +119,12 @@
           {
             name: "客户列表",
             icon: "user-friends",
-            link: "/users",
+            link: "/customers",
           },
           {
             name: "添加客户",
             icon: "user-plus",
-            link: "/addUser",
-          },
-          {
-            name: "员工",
-            icon: "people-carry",
-            iconColor: "#f3e6df",
-            parent: true,
-          },
-          {
-            name: "员工列表",
-            icon: "users",
-            link: "/employee",
-          },
-          {
-            name: "添加员工",
-            icon: "id-card",
-            link: "/addEmployee",
+            link: "/addCustomer",
           },
           {
             name: "系统设置",
@@ -127,12 +134,17 @@
           {
             name: "管理员列表",
             icon: "users-cog",
-            link: "/statistics",
+            link: "/sysUsers",
           },
           {
             name: "添加管理员",
             icon: "user-cog",
-            link: "/statistics",
+            link: "/addSysUser",
+          },
+          {
+            name: "角色权限管理",
+            icon: "user-tag",
+            link: "/roles",
           },
 
         ]

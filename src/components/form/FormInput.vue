@@ -2,18 +2,18 @@
 <template>
   <b-form-group
     :label-cols-sm="labelLength"
-    :label="label"
+  :label="label"
   >
-    <b-form-input
-      :state="(field.$dirty? (field.$error?false:null): (serverError?false:null))"
-      :placeholder="placeholder"
-      v-model="field.$model"
-      :type="type"
-      :class="!submitting&&((field.$dirty&&field.$error)||(!field.$dirty&&serverError))?'animated shake':''"
-    ></b-form-input>
-    <b-form-invalid-feedback>
-      {{serverError&&!field.$dirty?serverError:error}}
-    </b-form-invalid-feedback>
+  <b-form-input
+    :state="(field.$dirty? (field.$error?false:null): (serverError?false:null))"
+    :placeholder="placeholder"
+    v-model="field.$model"
+    :type="type"
+    :class="!submitting&&((field.$dirty&&field.$error)||(!field.$dirty&&serverError))?'animated shake':''"
+  ></b-form-input>
+  <b-form-invalid-feedback>
+    {{serverError&&!field.$dirty?serverError:error}}
+  </b-form-invalid-feedback>
   </b-form-group>
 </template>
 <script>

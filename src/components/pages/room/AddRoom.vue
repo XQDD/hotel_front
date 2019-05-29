@@ -1,5 +1,5 @@
 <template>
-  <b-container style="width: 50%;min-width: 30rem" fluid>
+  <b-container style="margin-top: 5rem;width: 50%;min-width: 30rem" fluid>
     <b-form @submit.prevent="onSubmit">
       <b-form-group
         v-if="form.id"
@@ -26,16 +26,6 @@
         label="房价（元/天）"
         placeholder="请输入房价"
         error="房价格式有误，且房价必须大于等于0"
-        type="number"
-        label-length="3"
-        :submitting="submitting"
-      />
-      <FormInput
-        :field="$v.form.deposit"
-        :server-error="serverErrors.deposit"
-        label="押金（元）"
-        placeholder="请输入押金"
-        error="押金格式有误，且押金必须大于等于0"
         type="number"
         label-length="3"
         :submitting="submitting"
@@ -71,6 +61,16 @@
         ></b-textarea>
       </b-form-group>
       <b-form-group
+        :label-cols-sm="3"
+        label="是否开启客房">
+        <b-form-radio-group
+          style="display: flex;align-items: center;height: 100%"
+          v-model="form.opened">
+          <b-form-radio value="true">是</b-form-radio>
+          <b-form-radio value="false">否</b-form-radio>
+        </b-form-radio-group>
+      </b-form-group>
+      <b-form-group
         label-cols-sm="3"
         label="图片">
         <b-form-file @change="uploadImage" multiple capture accept="image/*" v-model="img" browse-text="上传图片"
@@ -87,7 +87,7 @@
 
 
       <div class="d-flex flex-row justify-content-center my-1">
-        <b-button :disabled="$v.form.$invalid" type="submit" variant="primary"
+        <b-button :disabled="$v.form.$invalid" @click="onSubmit" variant="primary"
                   :style="{cursor:$v.form.$invalid?'not-allowed':''}">
           {{form.id?"修改":"添加"}}
         </b-button>
@@ -115,7 +115,6 @@
     beforeRouteUpdate(to, from) {
       if (Object.keys(to.query).length === 0 && Object.keys(from.query).length > 0) {
         this.form = {
-          deposit: null,
           description: null,
           id: null,
           images: [],
@@ -146,19 +145,19 @@
       return {
         //表单数据
         form: {
-          deposit: null,
           description: null,
           id: null,
           images: [],
           price: null,
           roomNo: null,
           roomTags: [],
+          opened: true,
         },
         //服务器错误
         serverErrors: {},
         //是否表单提交中
         submitting: false,
-        //当前输入的
+        //当前输入的标签
         tag: null,
         //服务器标签列表
         tags: [],
@@ -170,11 +169,11 @@
       form: {
         roomNo: {required},
         price: {decimal, required, minValue: minValue(0)},
-        deposit: {decimal, required, minValue: minValue(0)},
       }
     },
     methods: {
-      onSubmit() {
+      onSubmit(e) {
+        if (!(e instanceof MouseEvent)) return;
         //更新表单提交状态
         this.submitting = true;
         this.axios.post("/room/save", this.form).then(r => {

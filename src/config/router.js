@@ -6,6 +6,8 @@ import Frame from "../components/Frame";
 import Home from "../components/pages/Home";
 import AddRoom from "../components/pages/room/AddRoom";
 import RoomList from "../components/pages/room/RoomList";
+import AddRoomRecord from "../components/pages/room_record/AddRoomRecord";
+import RoomRecordList from "../components/pages/room_record/RoomRecordList";
 //使用vueRouter路由
 Vue.use(VueRouter)
 
@@ -20,9 +22,18 @@ let router = new VueRouter({
           component: RoomList
         },
         {
+          path: '/addRoomRecord',
+          component: AddRoomRecord
+        },
+        {
           path: '/addRoom',
           component: AddRoom
         },
+        {
+          path: '/roomRecords',
+          component: RoomRecordList
+        },
+
         {
           path: '/',
           component: Home

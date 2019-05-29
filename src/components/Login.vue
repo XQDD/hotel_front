@@ -34,7 +34,7 @@
               :submitting="submitting"
             />
 
-            <b-form-group label="选择分店" label-cols-sm="2">
+            <b-form-group label="选择服务器" label-cols-sm="2">
               <b-form-select v-model="branch" :options="branches" @change="updateCaptcha"></b-form-select>
             </b-form-group>
 
@@ -127,13 +127,13 @@
       }
     },
     computed: {
-      //分店
+      //服务器列表
       branches() {
         return urls.map((v, k) => {
           return {text: v.name, value: k}
         });
       },
-      //当前选择的分店
+      //当前选择的服务器
       branch: {
         get() {
           return this.$store.state.branch

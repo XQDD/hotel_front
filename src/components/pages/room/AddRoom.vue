@@ -35,6 +35,7 @@
         label="标签">
         <div style="display: flex; flex-direction: row;align-items: center;">
           <!--标签自动提示-->
+          <!--第三方输入框自动提示-->
           <vue-bootstrap-typeahead
             style="margin-right:  0.5rem;flex: 1"
             v-model="tag"
@@ -46,6 +47,7 @@
           </b-button>
         </div>
         <div style="display: flex; flex-direction: row;align-items: center;flex-wrap: wrap;">
+          <!--显示标签列表-->
           <b-button style="margin-top: 0.18rem;margin-right:  0.1rem;" class="animated flipInX"
                     @click="removeTag(v.name)" v-for="(v,k) in form.roomTags" pill
                     variant="info" :key="k">
@@ -82,6 +84,7 @@
             </b-badge>
           </template>
         </b-form-file>
+        <!--第三方图片预览组件-->
         <vue-previewer @onRemove="removeImage" :imgs="imgs"></vue-previewer>
       </b-form-group>
 
@@ -108,6 +111,7 @@
   import {ToastUtils} from "../../../utils/utils";
 
   library.add(faPlus);
+  //使用第三方图片预览组件
   Vue.use(VuePreviewer)
 
 
@@ -124,9 +128,11 @@
         }
       }
     },
+    //组件初始化时运行
     created() {
       //获取所有标签
       this.axios.get("/room/getRoomTags").then(r => {
+        //设置到状态中供输入提示
         this.tags = r.data.data.map(t => t.name);
       })
       //数据回显
@@ -150,6 +156,7 @@
           images: [],
           price: null,
           roomNo: null,
+          //标签列表
           roomTags: [],
           opened: true,
         },

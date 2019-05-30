@@ -3,6 +3,7 @@
   <b-container fluid>
     <b-row>
       <b-col cols="2" style="display: flex;flex-direction: column">
+        <!--左上角的用户信息-->
         <b-card header-bg-variant="transparent" class="text-center">
           <b-img slot="header" height="80" style="width: 5rem" rounded="circle"
                  :src="$store.getters.url.baseUploadURL+$store.state.user.icon" class="card-img-top"></b-img>
@@ -14,6 +15,7 @@
           </b-dropdown>
         </b-card>
         <b-list-group style="overflow-y: auto;height: 80vh">
+          <!--右边的链接列表-->
           <b-list-group-item
             v-for="(item,index) in permitSideBarItems"
             :key="index"
@@ -21,6 +23,7 @@
             button
             @click="nav(index,item.link)"
             :class="'side-bar side-bar-'+(item.parent?'parent':'child')+' side-bar-'+(item.link?'can':'not')+'-click'">
+            <!--图标-->
             <font-awesome-icon :color="index===activeKey?'':item.iconColor" v-if="item.icon" :icon="item.icon"/>
             <span>{{item.name}}</span>
           </b-list-group-item>
@@ -38,6 +41,7 @@
 
 <script>
   import {library} from '@fortawesome/fontawesome-svg-core'
+  //图标
   import {
     faBars,
     faBuilding,
@@ -62,7 +66,6 @@
 
   library.add(faBars, faUserTag, faFile, faSignInAlt, faSignOutAlt, faBuilding, faHome, faList, faPlusSquare, faUser, faUserFriends, faPeopleCarry, faUsers, faUserPlus, faChartLine, faUserCog, faUsersCog, faCogs, faIdCard);
 
-
   export default {
     beforeRouteEnter(to, from, next) {
       next(vm => {
@@ -76,6 +79,7 @@
     data() {
       return {
         activeKey: 0,
+        //所有链接按钮
         sideBarItems: [
           {
             name: "首页",
@@ -173,12 +177,16 @@
         this.$store.commit("logout")
         this.$router.push("/login")
       },
+      //导航
       nav(key, link) {
+        //切换当前高亮的链接
         this.activeKey = key
+        //跳转
         this.$router.push(link)
       }
     },
     computed: {
+      //将所有链接按钮转化为能访问的链接
       permitSideBarItems() {
         return this.sideBarItems.filter(i => {
           if (i.needPermissions) {

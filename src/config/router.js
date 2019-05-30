@@ -1,3 +1,6 @@
+/**
+ * 路由管理
+ */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from "../components/Login";
@@ -20,14 +23,18 @@ let router = new VueRouter({
   mode: "hash",
   routes: [
     //登录
-    {path: '/login', component: Login},
+    {
+      path: '/login', component: Login
+    },
     {
       path: '*', component: Frame, children: [
         //客房
+        //客房列表
         {
           path: '/rooms',
           component: RoomList
         },
+        //添加客房
         {
           path: '/addRoom',
           component: AddRoom
@@ -85,7 +92,9 @@ router.beforeEach(function (to, from, next) {
         next("login")
         return;
       }
-    } else if (to.path === "/login") {
+    }
+    //当跳转到登录界面时
+    else if (to.path === "/login") {
       //要是已登录，跳转到首页
       if (store.getters.isLogined) {
         next("/")

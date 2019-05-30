@@ -80,7 +80,8 @@
         </b-button>
       </div>
 
-      <b-button @click="updateRole" variant="outline-dark" style="width:8rem;margin-top: 2rem;align-self: center">保存设置
+      <b-button @click="updateRole" variant="outline-dark" style="width:8rem;margin-top: 2rem;align-self: center">
+        保存设置
       </b-button>
 
     </div>
@@ -136,6 +137,7 @@
         roles: [],
         permissions: [],
         roleName: null,
+        //当前选择的角色信息
         role: {}
       }
     },
@@ -150,8 +152,10 @@
       },
       toggleRole(id) {
         if (this.role.id === id) {
+          //当前角色状态id等于选择的id，取消选择
           this.role = {}
         } else {
+          //当前角色改为选择的角色
           this.role = {...this.pageData[this.pageData.findIndex(r => r.id === id)]}
         }
       },

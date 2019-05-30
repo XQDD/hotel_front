@@ -1,4 +1,6 @@
+//通用显示消息工具类
 export const ToastUtils = {
+  //错误
   error: (msg) => {
     window.vue.$bvToast.toast(msg,
       {
@@ -9,6 +11,7 @@ export const ToastUtils = {
         toastClass: "animated shake",
       })
   },
+  // 成功
   success: (msg) => {
     window.vue.$bvToast.toast(msg,
       {
@@ -21,6 +24,7 @@ export const ToastUtils = {
 };
 
 
+// 将时间戳转化为2018-1-1格式的时间
 export const TimeUtils = {
   formatDate: time => {
     let date = new Date(time);

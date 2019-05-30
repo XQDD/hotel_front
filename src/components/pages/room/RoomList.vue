@@ -87,6 +87,7 @@
   import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
   import {TimeUtils} from "../../../utils/utils";
 
+  //分页获取后台客房列表
   let fetchPage = (that) => that.axios
     .get("/room/getRoomList", {params: that.params})
     .then(r => {
@@ -104,6 +105,7 @@
       //获取所有标签
       this.axios.get("/room/getRoomTags").then(r => {
         this.tags = r.data.data.map(t => t.name);
+        //防止重复
         this.autocompletes = [...new Set(this.autocompletes.concat(this.tags))];
       })
       //获取所有房号
@@ -159,7 +161,7 @@
         },
         //搜索字段提示
         autocompletes: [],
-        //标签列表
+        //已选的标签列表
         tags: [],
         sort: -1,
       }
@@ -179,6 +181,7 @@
       },
       //选择标签
       toggleTag(tag) {
+        //判断当前标签是否在标签列表中
         let index = this.params.tags.indexOf(tag);
         if (index < 0) {
           this.params.tags.push(tag)

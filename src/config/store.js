@@ -1,3 +1,6 @@
+/**
+ * 全局状态管理
+ */
 import Vue from "vue";
 import Vuex from "vuex";
 import {urls} from "../constans/urls";
@@ -6,6 +9,7 @@ Vue.use(Vuex);
 
 //初始化服务器选择
 const branch = localStorage.getItem("branch") || 0;
+
 // 设置axios base url
 let setAxiosBaseUrl = (branch) => Vue.axios.defaults.baseURL = urls[branch].baseURL;
 setAxiosBaseUrl(branch);
@@ -17,6 +21,7 @@ let localStoreUser = JSON.parse(localStorage.getItem("user"));
 let getPermissions = user => user.roles.flatMap(r => r.permissions.map(p => p.permission));
 export default new Vuex.Store({
   strict: true,
+  //全局状态
   state: {
     //用户登录数据
     user: localStoreUser,
@@ -27,6 +32,7 @@ export default new Vuex.Store({
     //当前随机动画效果
     randomAnimation: randomAnimation()
   },
+  //方法
   mutations: {
     switchBranch: (state, {branch}) => {
       state.branch = branch
@@ -43,11 +49,12 @@ export default new Vuex.Store({
       state.permissions = []
       localStorage.removeItem("user")
     },
+    //随即动画
     randomAnimation: (state) => {
       state.randomAnimation = randomAnimation();
     }
   },
-  actions: {},
+  //转化状态，方便获取当前状态
   getters: {
     isLogined: state => state.user != null,
     url: state => urls[state.branch],

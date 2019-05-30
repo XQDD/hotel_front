@@ -1,10 +1,14 @@
 <template>
-  <b-container class="h-100 d-flex flex-column login-container" fluid>
+  <b-container style="display: flex;flex-direction: column;height: 100%"
+               class="login-container" fluid>
+    <!--先上下布局-->
     <b-row align-h="center" class="mt-4 font-weight-bold" style="font-size: 2rem;color: white">
       XX酒店管理系统
     </b-row>
     <b-row align-v="center" style="flex:1">
+      <!--后左右布局-->
       <b-col>
+        <!--轮播图-->
         <b-carousel>
           <b-carousel-slide img-src="../assets/images/login_hotel1.png"/>
           <b-carousel-slide img-src="../assets/images/login_hotel2.jpg"/>
@@ -14,7 +18,7 @@
       <b-col>
         <b-card style="background-color:#ced4da;padding: 1.5rem 1.2rem 1rem 1.2rem">
           <b-form @submit.prevent="onSubmit">
-
+            <!--表单-->
             <FormInput
               :field="$v.form.name"
               :server-error="serverErrors.name"
@@ -75,6 +79,7 @@
 
   export default {
     components: {FormInput},
+    //当前状态
     data() {
       return {
         //表单状态
@@ -126,6 +131,7 @@
         this.captchaUrl = getCaptchaUrl(this.$store.state.branch);
       }
     },
+    //计算属性，也是状态，只是对data内容进行封装和转化
     computed: {
       //服务器列表
       branches() {

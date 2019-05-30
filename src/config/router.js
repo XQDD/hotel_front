@@ -8,32 +8,62 @@ import AddRoom from "../components/pages/room/AddRoom";
 import RoomList from "../components/pages/room/RoomList";
 import AddRoomRecord from "../components/pages/room_record/AddRoomRecord";
 import RoomRecordList from "../components/pages/room_record/RoomRecordList";
+import AddCustomer from "../components/pages/customer/AddCustomer";
+import CustomerList from "../components/pages/customer/CustomerList";
+import AddSysUser from "../components/pages/sys_user/AddSysUser";
+import SysUserList from "../components/pages/sys_user/SysUserList";
+import RoleList from "../components/pages/sys_user/RoleList";
 //使用vueRouter路由
 Vue.use(VueRouter)
 
 let router = new VueRouter({
   mode: "hash",
   routes: [
+    //登录
     {path: '/login', component: Login},
     {
       path: '*', component: Frame, children: [
+        //客房
         {
           path: '/rooms',
           component: RoomList
         },
         {
-          path: '/addRoomRecord',
-          component: AddRoomRecord
-        },
-        {
           path: '/addRoom',
           component: AddRoom
+        },
+        //客房记录
+        {
+          path: '/addRoomRecord',
+          component: AddRoomRecord
         },
         {
           path: '/roomRecords',
           component: RoomRecordList
         },
-
+        //客户
+        {
+          path: '/addCustomer',
+          component: AddCustomer
+        },
+        {
+          path: '/customers',
+          component: CustomerList
+        },
+        //系统用户
+        {
+          path: '/addSysUser',
+          component: AddSysUser
+        },
+        {
+          path: '/sysUsers',
+          component: SysUserList
+        },
+        {
+          path: '/roles',
+          component: RoleList
+        },
+        //首页
         {
           path: '/',
           component: Home

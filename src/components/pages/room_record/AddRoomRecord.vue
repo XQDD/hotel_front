@@ -23,6 +23,7 @@
           :minMatchingChars="1"
           placeholder="请输入客户姓名"
           ref="name"
+          @input="customerChanged"
           @hit="setUser('name',form.customer.name)"
           :data="names"/>
       </b-form-group>
@@ -31,6 +32,7 @@
         :label-cols-sm="3"
         label="性别">
         <b-form-radio-group
+          @change="customerChanged"
           style="display: flex;align-items: center;height: 100%"
           v-model="form.customer.sex">
           <b-form-radio value="男">男</b-form-radio>
@@ -46,6 +48,7 @@
           v-model="form.customer.phoneNumber"
           :minMatchingChars="1"
           placeholder="请输入客户电话"
+          @input="customerChanged"
           @hit="setUser('phoneNumber',form.customer.phoneNumber)"
           ref="phoneNumber"
           :data="phoneNumbers"/>
@@ -59,6 +62,7 @@
           v-model="form.customer.identification"
           :minMatchingChars="1"
           ref="identification"
+          @input="customerChanged"
           placeholder="请输入客户身份证"
           @hit="setUser('identification',form.customer.identification)"
           :data="identifications"/>
@@ -196,6 +200,7 @@
         this.submitting = true;
         this.axios.post("/roomRecord/enter", this.form).then(r => {
           ToastUtils.success(r.data.msg);
+          //TODO 演示时去除注释
           // this.$router.push("/roomRecords")
         }).catch(({response}) => {
           if (response.data.data) {
@@ -216,6 +221,9 @@
           this.$refs.identification.inputValue = this.form.customer.identification
           this.$refs.phoneNumber.inputValue = this.form.customer.phoneNumber
         }
+      },
+      customerChanged() {
+        this.form.customer.id = null
       }
     },
     computed: {

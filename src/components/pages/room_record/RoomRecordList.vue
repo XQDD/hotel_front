@@ -82,7 +82,7 @@
 
 <script>
   import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
-  import {TimeUtils} from "../../../utils/utils";
+  import {TimeUtils, ToastUtils} from "../../../utils/utils";
 
   let fetchPage = (that) => that.axios
     .get("/roomRecord/getRecordList", {params: that.params})
@@ -228,7 +228,8 @@
               payed: this.item.payed,
               status: this.item.status
             }
-          }).then(() => {
+          }).then((res) => {
+            ToastUtils.success(res.data.msg)
             this.$refs['setStatus'].hide()
             fetchPage(this)
           })

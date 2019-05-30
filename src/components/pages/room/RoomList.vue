@@ -185,7 +185,7 @@
         } else {
           this.params.tags.splice(index, 1)
         }
-        fetchPage(this)
+        this.queryPage()
       },
       //改变排序方式
       changeSort() {

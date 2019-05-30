@@ -7862,6 +7862,11 @@ vue-bootstrap-typeahead@^0.2.6:
     resize-observer-polyfill "^1.5.0"
     vue "^2.5.17"
 
+vue-directive-long-press@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/vue-directive-long-press/download/vue-directive-long-press-1.1.0.tgz#ef30e3aa846c81b843a28589f288a7496a852d0a"
+  integrity sha1-7zDjqoRsgbhDooWJ8oinSWqFLQo=
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

@@ -178,6 +178,7 @@
         this.submitting = true;
         this.axios.post("/room/save", this.form).then(r => {
           ToastUtils.success(r.data.msg);
+          //TODO 演示时去除注释
           // this.$router.push("/rooms")
         }).catch(({response}) => {
           if (response.data.data) {

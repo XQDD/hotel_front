@@ -15,7 +15,7 @@
         </b-card>
         <b-list-group style="overflow-y: auto;height: 80vh">
           <b-list-group-item
-            v-for="(item,index) in sideBarItems"
+            v-for="(item,index) in permitSideBarItems"
             :key="index"
             :active="index===activeKey"
             button
@@ -60,12 +60,17 @@
     faUserTag,
   } from '@fortawesome/free-solid-svg-icons'
 
-  library.add(faBars,faUserTag, faFile, faSignInAlt, faSignOutAlt, faBuilding, faHome, faList, faPlusSquare, faUser, faUserFriends, faPeopleCarry, faUsers, faUserPlus, faChartLine, faUserCog, faUsersCog, faCogs, faIdCard);
+  library.add(faBars, faUserTag, faFile, faSignInAlt, faSignOutAlt, faBuilding, faHome, faList, faPlusSquare, faUser, faUserFriends, faPeopleCarry, faUsers, faUserPlus, faChartLine, faUserCog, faUsersCog, faCogs, faIdCard);
 
 
   export default {
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.activeKey = vm.permitSideBarItems.findIndex(i => i.link === to.path)
+      });
+    },
     beforeRouteUpdate(to, from, next) {
-      this.activeKey = this.sideBarItems.findIndex(i => i.link === to.path)
+      this.activeKey = this.permitSideBarItems.findIndex(i => i.link === to.path)
       next();
     },
     data() {
@@ -83,71 +88,84 @@
             icon: "building",
             iconColor: "#e2e2e2",
             parent: true,
+            needPermissions: ["sys:room:save", "sys:room:getRoomList"]
           },
           {
             name: "客房列表",
             icon: "list",
             link: "/rooms",
+            needPermissions: ["sys:room:getRoomList"]
           },
           {
             name: "添加客房",
             icon: "plus-square",
             link: "/addRoom",
+            needPermissions: ["sys:room:save"]
           },
           {
             name: "入住记录",
             icon: "file",
             iconColor: "#4f90e2",
             parent: true,
+            needPermissions: ["sys:roomRecord:getRecordList", "sys:roomRecord:enter"]
           },
           {
             name: "入住列表",
             icon: "bars",
             link: "/roomRecords",
+            needPermissions: ["sys:roomRecord:getRecordList"]
           },
           {
             name: "入住登记",
             icon: "sign-in-alt",
             link: "/addRoomRecord",
+            needPermissions: ["sys:roomRecord:enter"]
           },
           {
             name: "客户",
             icon: "user",
             iconColor: "#d8ffe6",
             parent: true,
+            needPermissions: ["sys:customer:getAllCustomers", "sys:customer:save"]
           },
           {
             name: "客户列表",
             icon: "user-friends",
             link: "/customers",
+            needPermissions: ["sys:customer:getAllCustomers"]
           },
           {
             name: "添加客户",
             icon: "user-plus",
             link: "/addCustomer",
+            needPermissions: ["sys:customer:save"]
           },
           {
             name: "系统设置",
             icon: "cogs",
             parent: true,
+            needPermissions: ["sys:user:list", "sys:user:save", "sys:user:getAllRole"]
           },
           {
             name: "管理员列表",
             icon: "users-cog",
             link: "/sysUsers",
+            needPermissions: ["sys:user:list"]
           },
           {
             name: "添加管理员",
             icon: "user-cog",
             link: "/addSysUser",
+            needPermissions: ["sys:user:save"]
           },
           {
             name: "角色权限管理",
             icon: "user-tag",
             link: "/roles",
+            needPermissions: ["sys:user:getAllRole"]
           },
 
-        ]
+        ],
       }
     },
     methods: {
@@ -158,6 +176,20 @@
       nav(key, link) {
         this.activeKey = key
         this.$router.push(link)
+      }
+    },
+    computed: {
+      permitSideBarItems() {
+        return this.sideBarItems.filter(i => {
+          if (i.needPermissions) {
+            for (let p of i.needPermissions) {
+              if (this.$store.state.permissions.indexOf(p) < 0) {
+                return false;
+              }
+            }
+          }
+          return true;
+        });
       }
     }
   }
